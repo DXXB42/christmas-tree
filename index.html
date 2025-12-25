@@ -24,23 +24,41 @@
       overflow:hidden;
     }
     .wrap{
-      width:min(720px, 92vw);
+      width:min(780px, 92vw);
       text-align:center;
-      padding:24px 12px 40px;
+      padding:24px 12px 34px;
       position:relative;
       z-index:2;
     }
-    h1{
-      margin:0 0 6px;
-      font-weight:800;
-      letter-spacing:.02em;
-      text-shadow: var(--glow);
+    h1{ margin:0 0 6px; font-weight:800; letter-spacing:.02em; text-shadow: var(--glow); }
+    .sub{ opacity:.9; margin:0 0 10px; font-size:14px; }
+
+    /* Countdown */
+    .countdown{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+      padding:10px 14px;
+      border-radius:14px;
+      background: rgba(255,255,255,.10);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+      margin: 6px 0 14px;
+      flex-wrap:wrap;
     }
-    .sub{
-      opacity:.9;
-      margin:0 0 16px;
-      font-size:14px;
+    .countdown b{ text-shadow: var(--glow); }
+    .pill{
+      display:inline-flex;
+      gap:6px;
+      align-items:baseline;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(0,0,0,.18);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.10);
     }
+    .pill .num{ font-weight:800; font-size:18px; }
+    .pill .lab{ font-size:12px; opacity:.85; }
 
     /* Tree */
     .scene{
@@ -52,17 +70,15 @@
       align-items:flex-end;
       padding-bottom:10px;
     }
-
     .tree{
       position:relative;
       width:280px;
       height:420px;
       filter: drop-shadow(0 18px 30px rgba(0,0,0,.35));
+      user-select:none;
     }
     .layer{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
+      position:absolute; left:50%; transform:translateX(-50%);
       width:0;height:0;
       border-left:140px solid transparent;
       border-right:140px solid transparent;
@@ -72,62 +88,41 @@
     .layer:nth-child(1){ top:70px; border-bottom-color:var(--tree2); }
     .layer:nth-child(2){
       top:150px;
-      border-left-width:155px;
-      border-right-width:155px;
-      border-bottom-width:190px;
-      border-bottom-color:var(--tree1);
+      border-left-width:155px; border-right-width:155px;
+      border-bottom-width:190px; border-bottom-color:var(--tree1);
     }
     .layer:nth-child(3){
       top:240px;
-      border-left-width:175px;
-      border-right-width:175px;
-      border-bottom-width:210px;
-      border-bottom-color:var(--tree2);
+      border-left-width:175px; border-right-width:175px;
+      border-bottom-width:210px; border-bottom-color:var(--tree2);
     }
-
     .trunk{
-      position:absolute;
-      bottom:-6px;
-      left:50%;
-      transform:translateX(-50%);
-      width:70px;
-      height:90px;
+      position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);
+      width:70px; height:90px;
       background: linear-gradient(#7a4a23, var(--trunk));
       border-radius:10px;
       box-shadow: inset 0 0 0 2px rgba(255,255,255,.07);
     }
-
     /* Star */
     .star{
-      position:absolute;
-      top:18px;
-      left:50%;
+      position:absolute; top:18px; left:50%;
       transform:translateX(-50%) rotate(0deg);
       width:52px;height:52px;
       filter: drop-shadow(0 0 14px rgba(255,220,90,.85));
       animation: spin 8s linear infinite;
     }
     .star:before{
-      content:"";
-      position:absolute;
-      inset:0;
+      content:""; position:absolute; inset:0;
       background: conic-gradient(from 0deg, #ffeaa6, #ffd25a, #fff3c9, #ffd25a, #ffeaa6);
-      clip-path: polygon(
-        50% 0%, 61% 35%, 98% 35%, 68% 57%,
-        79% 91%, 50% 70%, 21% 91%, 32% 57%,
-        2% 35%, 39% 35%
-      );
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
       border-radius:10px;
     }
     @keyframes spin{ to{ transform:translateX(-50%) rotate(360deg);} }
 
     /* Garlands */
     .garland{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      width:260px;
-      height:70px;
+      position:absolute; left:50%; transform:translateX(-50%);
+      width:260px; height:70px;
       border-bottom: 3px solid rgba(255,255,255,.18);
       border-radius: 0 0 220px 220px;
       top:145px;
@@ -138,8 +133,7 @@
     /* Lights */
     .bulb{
       position:absolute;
-      width:10px;height:10px;
-      border-radius:50%;
+      width:10px;height:10px;border-radius:50%;
       box-shadow: 0 0 8px currentColor, 0 0 18px color-mix(in srgb, currentColor 50%, transparent);
       animation: blink 1.6s infinite;
     }
@@ -151,66 +145,40 @@
     /* Ornaments */
     .orn{
       position:absolute;
-      width:14px;height:14px;
-      border-radius:50%;
+      width:14px;height:14px;border-radius:50%;
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(255,255,255,0) 35%),
                   radial-gradient(circle at 60% 65%, rgba(0,0,0,.25), rgba(0,0,0,0) 50%);
       box-shadow: inset 0 0 0 2px rgba(255,255,255,.12), 0 8px 16px rgba(0,0,0,.18);
     }
 
     /* Snow */
-    .snow{
-      position:fixed;
-      inset:-10vh 0 0 0;
-      pointer-events:none;
-      z-index:1;
-    }
+    .snow{ position:fixed; inset:-10vh 0 0 0; pointer-events:none; z-index:1; }
     .flake{
-      position:absolute;
-      top:-10vh;
-      width:6px;height:6px;
-      border-radius:50%;
+      position:absolute; top:-10vh;
+      width:6px;height:6px;border-radius:50%;
       background: rgba(255,255,255,.85);
       box-shadow: 0 0 10px rgba(255,255,255,.35);
       animation: fall linear infinite;
     }
-    @keyframes fall{
-      to{ transform: translate(var(--dx), 120vh); }
-    }
+    @keyframes fall{ to{ transform: translate(var(--dx), 120vh); } }
 
     /* Controls */
     .btns{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
-      margin-top:14px;
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+      margin-top:12px;
     }
     button{
-      border:0;
-      padding:10px 12px;
-      border-radius:12px;
-      background: rgba(255,255,255,.10);
-      color:var(--text);
-      cursor:pointer;
-      backdrop-filter: blur(10px);
+      border:0; padding:10px 12px; border-radius:12px;
+      background: rgba(255,255,255,.10); color:var(--text);
+      cursor:pointer; backdrop-filter: blur(10px);
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
       transition:.15s transform ease, .15s background ease;
     }
     button:hover{ transform:translateY(-1px); background: rgba(255,255,255,.14); }
     button:active{ transform:translateY(0px) scale(.98); }
 
-    .note{
-      margin-top:12px;
-      font-size:12px;
-      opacity:.85;
-    }
-    .credit{
-      margin-top:6px;
-      font-size:12px;
-      opacity:.7;
-    }
-    a{ color:#b9f3ff; }
+    .note{ margin-top:12px; font-size:12px; opacity:.85; }
+    .credit{ margin-top:6px; font-size:12px; opacity:.7; }
   </style>
 </head>
 <body>
@@ -220,10 +188,17 @@
     <h1>🎄 Merry Christmas</h1>
     <p class="sub">点击按钮切换灯光模式 / 点击树也可以切换 ✨</p>
 
+    <div class="countdown" aria-label="Countdown">
+      <b id="countTitle">距离新年还有</b>
+      <span class="pill"><span class="num" id="d">0</span><span class="lab">天</span></span>
+      <span class="pill"><span class="num" id="h">00</span><span class="lab">时</span></span>
+      <span class="pill"><span class="num" id="m">00</span><span class="lab">分</span></span>
+      <span class="pill"><span class="num" id="s">00</span><span class="lab">秒</span></span>
+    </div>
+
     <div class="scene">
       <div class="tree" id="tree" aria-label="Christmas Tree">
         <div class="star"></div>
-
         <div class="layer"></div>
         <div class="layer"></div>
         <div class="layer"></div>
@@ -239,11 +214,10 @@
     <div class="btns">
       <button id="modeBtn">切换灯光模式</button>
       <button id="snowBtn">切换飘雪</button>
-      <button id="shotBtn">生成分享截图提示</button>
     </div>
 
     <div class="note">把这个页面的链接发给朋友，他们打开就能看到你的圣诞树 🎁</div>
-    <div class="credit">Tips：手机上可用系统“分享→拷贝链接”。</div>
+    <div class="credit">倒计时按访问者的本地时间计算。</div>
   </div>
 
 <script>
@@ -251,28 +225,27 @@
   const snowWrap = document.getElementById('snow');
   const modeBtn = document.getElementById('modeBtn');
   const snowBtn = document.getElementById('snowBtn');
-  const shotBtn = document.getElementById('shotBtn');
+
+  // Countdown
+  const dEl = document.getElementById('d');
+  const hEl = document.getElementById('h');
+  const mEl = document.getElementById('m');
+  const sEl = document.getElementById('s');
+  const countTitle = document.getElementById('countTitle');
 
   const modes = [
-    // mode 0: classic
     ['#ff4d4d','#ffd24d','#4dff88','#4db3ff','#b84dff'],
-    // mode 1: warm
     ['#ffb86b','#ffd56b','#fff0b3','#ff7aa2','#ffa86b'],
-    // mode 2: icy
     ['#a6f6ff','#6be4ff','#b3c7ff','#a6b0ff','#ffffff'],
   ];
   let mode = 0;
 
   function rand(min, max){ return Math.random()*(max-min)+min; }
 
-  function clearDecor(){
-    tree.querySelectorAll('.bulb,.orn').forEach(el=>el.remove());
-  }
+  function clearDecor(){ tree.querySelectorAll('.bulb,.orn').forEach(el=>el.remove()); }
 
   function addBulbsAndOrns(){
     const colors = modes[mode];
-
-    // Bulbs roughly along 3 garlands
     const garlandY = [150, 235, 325];
     const counts = [14, 16, 18];
 
@@ -282,21 +255,17 @@
         const b = document.createElement('div');
         b.className = 'bulb';
         const c = colors[k % colors.length];
-        b.style.color = c;
-        b.style.background = c;
+        b.style.color = c; b.style.background = c;
 
-        // distribute across tree width
         const x = 50 + (k-(n-1)/2) * (180/n) + rand(-6,6);
         b.style.left = `calc(50% + ${x-50}px)`;
         b.style.top = `${y + rand(-6,6)}px`;
         b.style.animationDuration = `${rand(1.1, 2.2)}s`;
         b.style.animationDelay = `${rand(0, 1.2)}s`;
-
         tree.appendChild(b);
       }
     });
 
-    // Ornaments random on tree body
     for(let i=0;i<22;i++){
       const o = document.createElement('div');
       o.className = 'orn';
@@ -304,13 +273,11 @@
       o.style.background += `, radial-gradient(circle at 70% 70%, ${c}, rgba(0,0,0,0) 55%)`;
 
       const top = rand(115, 360);
-      // width envelope grows with y
       const spread = (top-90) * 0.8;
       const left = rand(-spread/2, spread/2);
       o.style.left = `calc(50% + ${left}px)`;
       o.style.top = `${top}px`;
       o.style.transform = `scale(${rand(.85, 1.25)})`;
-
       tree.appendChild(o);
     }
   }
@@ -323,10 +290,8 @@
 
   // Snow
   let snowOn = true;
-  let flakes = [];
-  function makeSnow(count=80){
+  function makeSnow(count=90){
     snowWrap.innerHTML = '';
-    flakes = [];
     for(let i=0;i<count;i++){
       const f = document.createElement('div');
       f.className = 'flake';
@@ -345,32 +310,55 @@
       f.style.setProperty('--dx', dx);
 
       snowWrap.appendChild(f);
-      flakes.push(f);
     }
   }
-
   function toggleSnow(){
     snowOn = !snowOn;
     snowWrap.style.display = snowOn ? 'block' : 'none';
   }
 
-  // Share hint
-  function shareHint(){
-    const text = `分享小技巧：
-1）电脑：打开页面 → 复制地址栏链接发给朋友
-2）手机：浏览器“分享”→“拷贝链接”
-（截图也很有节日气氛🎄）`;
-    alert(text);
+  // Countdown to next Jan 1 (visitor's local time)
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function startCountdown(){
+    function tick(){
+      const now = new Date();
+      const y = now.getFullYear();
+      const nextNY = new Date(y + 1, 0, 1, 0, 0, 0, 0); // Jan 1 next year (local)
+      let diff = nextNY - now;
+
+      if (diff <= 0){
+        countTitle.textContent = '🎉 新年快乐！';
+        dEl.textContent = '0';
+        hEl.textContent = '00';
+        mEl.textContent = '00';
+        sEl.textContent = '00';
+        return;
+      }
+
+      const sec = Math.floor(diff / 1000);
+      const d = Math.floor(sec / 86400);
+      const h = Math.floor((sec % 86400) / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = sec % 60;
+
+      dEl.textContent = d;
+      hEl.textContent = pad2(h);
+      mEl.textContent = pad2(m);
+      sEl.textContent = pad2(s);
+    }
+    tick();
+    setInterval(tick, 250);
   }
 
   // init
   addBulbsAndOrns();
   makeSnow(90);
+  startCountdown();
 
+  // controls
   modeBtn.addEventListener('click', nextMode);
   tree.addEventListener('click', nextMode);
   snowBtn.addEventListener('click', toggleSnow);
-  shotBtn.addEventListener('click', shareHint);
 </script>
 </body>
 </html>
