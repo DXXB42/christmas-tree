@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🎄 圣诞树</title>
+  <title>🎄 圣诞树 + 新年倒计时</title>
   <style>
     :root{
       --bg1:#07121f; --bg2:#0b2a3a;
@@ -24,7 +24,7 @@
       overflow:hidden;
     }
     .wrap{
-      width:min(780px, 92vw);
+      width:min(820px, 92vw);
       text-align:center;
       padding:24px 12px 34px;
       position:relative;
@@ -76,6 +76,7 @@
       height:420px;
       filter: drop-shadow(0 18px 30px rgba(0,0,0,.35));
       user-select:none;
+      cursor:pointer;
     }
     .layer{
       position:absolute; left:50%; transform:translateX(-50%);
@@ -103,6 +104,7 @@
       border-radius:10px;
       box-shadow: inset 0 0 0 2px rgba(255,255,255,.07);
     }
+
     /* Star */
     .star{
       position:absolute; top:18px; left:50%;
@@ -179,14 +181,38 @@
 
     .note{ margin-top:12px; font-size:12px; opacity:.85; }
     .credit{ margin-top:6px; font-size:12px; opacity:.7; }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      left:50%; bottom:18px;
+      transform:translateX(-50%);
+      padding:10px 12px;
+      border-radius:12px;
+      background: rgba(0,0,0,.45);
+      color: rgba(255,255,255,.92);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      max-width:min(560px, 92vw);
+      font-size:13px;
+      display:none;
+    }
   </style>
 </head>
 <body>
+
+  <!-- ✅ 1) 把你的 mp3 上传到仓库根目录，命名为 christmas.mp3（或改下面 src） -->
+  <audio id="bgm" preload="auto" loop playsinline>
+    <source src="christmas.mp3" type="audio/mpeg">
+  </audio>
+
   <div class="snow" id="snow"></div>
+  <div class="toast" id="toast"></div>
 
   <div class="wrap">
     <h1>🎄 Merry Christmas</h1>
-    <p class="sub">点击按钮切换灯光模式 / 点击树也可以切换 ✨</p>
+    <p class="sub">点击树或按钮切换灯光模式；音乐默认静音（可切换）✨</p>
 
     <div class="countdown" aria-label="Countdown">
       <b id="countTitle">距离新年还有</b>
@@ -197,7 +223,7 @@
     </div>
 
     <div class="scene">
-      <div class="tree" id="tree" aria-label="Christmas Tree">
+      <div class="tree" id="tree" aria-label="Christmas Tree" title="点击我切换灯光模式">
         <div class="star"></div>
         <div class="layer"></div>
         <div class="layer"></div>
@@ -214,15 +240,20 @@
     <div class="btns">
       <button id="modeBtn">切换灯光模式</button>
       <button id="snowBtn">切换飘雪</button>
+      <button id="musicBtn">🔇 静音</button>
+      <button id="startBtn">▶︎ 开始音乐</button>
     </div>
 
-    <div class="note">把这个页面的链接发给朋友，他们打开就能看到你的圣诞树 🎁</div>
-    <div class="credit">倒计时按访问者的本地时间计算。</div>
+    <div class="note">把 GitHub Pages 链接发给朋友，他们打开就能看到 🎁</div>
+    <div class="credit">提示：部分浏览器会拦截自动播放；点一次“开始音乐”即可。</div>
   </div>
 
 <script>
+  // ---------- Elements ----------
   const tree = document.getElementById('tree');
   const snowWrap = document.getElementById('snow');
+  const toast = document.getElementById('toast');
+
   const modeBtn = document.getElementById('modeBtn');
   const snowBtn = document.getElementById('snowBtn');
 
@@ -233,19 +264,38 @@
   const sEl = document.getElementById('s');
   const countTitle = document.getElementById('countTitle');
 
+  // Music
+  const bgm = document.getElementById('bgm');
+  const musicBtn = document.getElementById('musicBtn');
+  const startBtn = document.getElementById('startBtn');
+
+  // ---------- Helpers ----------
+  function rand(min, max){ return Math.random()*(max-min)+min; }
+  function pad2(n){ return String(n).padStart(2,'0'); }
+
+  let toastTimer = null;
+  function showToast(msg, ms=2600){
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toast.style.display='none', ms);
+  }
+
+  // ---------- Tree Decor ----------
   const modes = [
-    ['#ff4d4d','#ffd24d','#4dff88','#4db3ff','#b84dff'],
-    ['#ffb86b','#ffd56b','#fff0b3','#ff7aa2','#ffa86b'],
-    ['#a6f6ff','#6be4ff','#b3c7ff','#a6b0ff','#ffffff'],
+    ['#ff4d4d','#ffd24d','#4dff88','#4db3ff','#b84dff'], // classic
+    ['#ffb86b','#ffd56b','#fff0b3','#ff7aa2','#ffa86b'], // warm
+    ['#a6f6ff','#6be4ff','#b3c7ff','#a6b0ff','#ffffff'], // icy
   ];
   let mode = 0;
 
-  function rand(min, max){ return Math.random()*(max-min)+min; }
-
-  function clearDecor(){ tree.querySelectorAll('.bulb,.orn').forEach(el=>el.remove()); }
+  function clearDecor(){
+    tree.querySelectorAll('.bulb,.orn').forEach(el=>el.remove());
+  }
 
   function addBulbsAndOrns(){
     const colors = modes[mode];
+
     const garlandY = [150, 235, 325];
     const counts = [14, 16, 18];
 
@@ -255,7 +305,8 @@
         const b = document.createElement('div');
         b.className = 'bulb';
         const c = colors[k % colors.length];
-        b.style.color = c; b.style.background = c;
+        b.style.color = c;
+        b.style.background = c;
 
         const x = 50 + (k-(n-1)/2) * (180/n) + rand(-6,6);
         b.style.left = `calc(50% + ${x-50}px)`;
@@ -288,7 +339,7 @@
     addBulbsAndOrns();
   }
 
-  // Snow
+  // ---------- Snow ----------
   let snowOn = true;
   function makeSnow(count=90){
     snowWrap.innerHTML = '';
@@ -312,18 +363,18 @@
       snowWrap.appendChild(f);
     }
   }
+
   function toggleSnow(){
     snowOn = !snowOn;
     snowWrap.style.display = snowOn ? 'block' : 'none';
   }
 
-  // Countdown to next Jan 1 (visitor's local time)
-  function pad2(n){ return String(n).padStart(2,'0'); }
+  // ---------- Countdown ----------
   function startCountdown(){
     function tick(){
       const now = new Date();
       const y = now.getFullYear();
-      const nextNY = new Date(y + 1, 0, 1, 0, 0, 0, 0); // Jan 1 next year (local)
+      const nextNY = new Date(y + 1, 0, 1, 0, 0, 0, 0); // next Jan 1 (local time)
       let diff = nextNY - now;
 
       if (diff <= 0){
@@ -350,15 +401,59 @@
     setInterval(tick, 250);
   }
 
-  // init
+  // ---------- Music ----------
+  function updateMusicUI(){
+    musicBtn.textContent = bgm.muted ? '🔇 静音' : '🔊 有声';
+  }
+
+  async function tryAutoplayMuted(){
+    // 默认静音：大多数浏览器允许 muted autoplay
+    bgm.muted = true;
+    bgm.volume = 0.6;
+    updateMusicUI();
+
+    try{
+      await bgm.play();
+      showToast('音乐已自动播放（静音）。点“有声”可取消静音 🎶', 3200);
+    }catch(e){
+      showToast('自动播放被拦截：点“开始音乐”即可播放 🎵', 3500);
+    }
+  }
+
+  async function startMusic(){
+    try{
+      await bgm.play();
+      showToast(bgm.muted ? '开始播放（静音）' : '开始播放（有声）');
+    }catch(e){
+      showToast('无法播放：请确认 mp3 已上传且文件名正确（如 christmas.mp3）', 4200);
+    }
+  }
+
+  function toggleMute(){
+    bgm.muted = !bgm.muted;
+    updateMusicUI();
+    // 点击按钮属于用户手势：如果没播放就尝试播放
+    if (bgm.paused) startMusic();
+  }
+
+  // ---------- Init ----------
   addBulbsAndOrns();
   makeSnow(90);
   startCountdown();
+  tryAutoplayMuted();
 
-  // controls
+  // ---------- Events ----------
   modeBtn.addEventListener('click', nextMode);
   tree.addEventListener('click', nextMode);
   snowBtn.addEventListener('click', toggleSnow);
+
+  musicBtn.addEventListener('click', toggleMute);
+  startBtn.addEventListener('click', startMusic);
+
+  // 兜底：用户首次点击页面任意位置时尝试启动音乐（用户手势）
+  document.addEventListener('pointerdown', () => {
+    if (bgm.paused) startMusic();
+  }, { once:true });
 </script>
 </body>
 </html>
